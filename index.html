@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Dashboard</title>
+    <!-- Bootstrap CSS CDN  -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css" />
+    <!-- local style sheet -->
+    <link rel="stylesheet" href="./style.css/>">
+    <!-- jQuery & AJAX -->
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body class="container container-md">
+    <header class="row">
+        <h1 class="well well-lg col">Weather Dashboard</h1>
+    </header>
+
+    <body>
+        <!-- Display search box, submit icon, for user input form to get city -->
+        <form id="city-form">
+            <!-- Label for Text Box -->
+            <label for="city-input">Search for a City</label>
+
+            <!-- Text Input Box -->
+            <input type="text" id="city-input"><br>
+
+            <!-- Submit Button -->
+            <input id="submitted-city" type="submit" value="Submit">
+            <!--this should be a search icon -->
+        </form>
+
+        <!-- HtmL framework for data from APIs -->
+        <div class="city"></div>
+        <div class="temp"></div>
+        <div class="humidity"></div>
+        <div class="wind"></div>
+        <div class="uvindex"></div>
+
+        <script type="text/javascript">
+
+            $("#submitted-city").on("click", function (event) {
+                // Preventing the button from trying to submit the form
+                event.preventDefault();
+                // Storing the artist name
+                var subCity = $("#city-input").val().trim();
+                console.log(subCity);
+                // Pass the city to the getWeather function
+                getWeather(subCity);
+            });
+
+            function getWeather(subCity) {
+                // OpenWeather API key
+                var APIKey = "166a433c57516f51dfab1f7edaed8413";
+
+                // The URL for the OpenWeather API using the user input city and APIKey 
+                var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + subCity + "&units=imperial&appid=" + APIKey;
+
+
+                // AJAX call to the OpenWeatherMap API for current weather
+                $.ajax({
+                    url: queryURL,
+                    method: "GET"
+                })
+                    // We store all of the retrieved data inside of an object called "response"
+                    .then(function (response) {
+
+                        // Log the resulting object for reference
+                        console.log(response);
+
+                        //Retrieve the weather icon
+                        var icon = ("<img src='http://openweathermap.org/img/w/" + response.weather[0].icon + ".png'>");
+
+                        // Get the date in mm/dd/yyyy format
+                        var today = new Date();
+                        //el_up.innerHTML = today;
+                        var dd = today.getDate();
+                        var mm = today.getMonth() + 1;
+                        var yyyy = today.getFullYear();
+                        if (dd < 10) {
+                            dd = '0' + dd;
+                        }
+                        if (mm < 10) {
+                            mm = '0' + mm;
+                        }
+                        var today = mm + '/' + dd + '/' + yyyy;
+
+                        //Render City, Date, and Weather Icon
+                        $(".city").append("<span>" + response.name + "</span>");
+                        $(".city").append("<span>" + today + "</span>");
+                        $(".city").append("<span>" + icon + "</span>");
+
+                        // Transfer content to HTML
+                        $(".temp").text("Temperature: " + response.main.temp + " degrees");   //add degress symbol
+                        $(".wind").text("Wind Speed: " + response.wind.speed + " mph");
+                        $(".humidity").text("Humidity: " + response.main.humidity + "%");
+                    });
+            }
+        </script>
+        <!-- Thanks to GeeksforGeeks for guidance on the date format- https://www.geeksforgeeks.org/how-to-get-current-formatted-date-dd-mm-yyyy-in-javascript/ -->
+        <!-- Code to local JavaScript File -->
+        <!-- <script src="./script.js"></script> -->
+    </body>
+
+</html>
