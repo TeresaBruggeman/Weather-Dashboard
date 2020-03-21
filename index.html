@@ -41,66 +41,113 @@
         <div class="humidity"></div>
         <div class="wind"></div>
         <div class="uvindex"></div>
+        <div class="forecast"></div>
 
         <script type="text/javascript">
 
-            $("#submitted-city").on("click", function (event) {
-                // Preventing the button from trying to submit the form
-                event.preventDefault();
-                // Storing the artist name
-                var subCity = $("#city-input").val().trim();
-                console.log(subCity);
-                // Pass the city to the getWeather function
-                getWeather(subCity);
+            $(document).ready(function () {
+
+                // event listener on the Submti button
+                $("#submitted-city").on("click", function (event) {
+                    // Preventing the button from trying to submit the form
+                    event.preventDefault();
+
+                    // Storing the submitted city name
+                    var subCity = $("#city-input").val().trim();
+
+                    // OpenWeather API key
+                    var APIKey = "166a433c57516f51dfab1f7edaed8413";
+
+                    // OpenWeather query for current weather with user imput and api key
+                    var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + subCity + "&units=imperial&appid=" + APIKey
+
+                    //declare and define date variables
+                    var longDate = new Date();
+                    console.log(longDate);
+                    var dd = longDate.getDate();
+                    var mm = longDate.getMonth() + 1;
+                    var yyyy = longDate.getFullYear();
+                    console.log(mm, dd, yyyy);
+
+                    //call functions for current weather and the five-day forecast
+                    getCurrentWeather(queryURL, dd, mm, yyyy);
+                    getForecast(subCity, APIKey, dd, mm, yyyy);
+                });
+
+                //gets and renders current weather
+                function getCurrentWeather(queryURL, dd, mm, yyyy) {
+                    // Call to OpenWeather server for current weather data, render city, today's date, weather icon
+                    $.ajax({
+                        url: queryURL,
+                        method: "GET"
+                    })
+                        // We store all of the retrieved data inside of an object called "response"
+                        .then(function (response) {
+
+                            // Log the resulting object for reference
+                            console.log(response);
+
+                            //Retrieve the weather icon
+                            var icon = ("<img src='http://openweathermap.org/img/w/" + response.weather[0].icon + ".png'>");
+
+                            //Render City, Date, and Weather Icon
+                            $(".city").append("<span>" + response.name + "</span>");
+                            //$(".city").append("<span>" + today + "</span>");
+                            $(".city").append("<span>" + icon + "</span>");
+
+                            // Transfer content to HTML
+                            $(".temp").text("Temperature: " + response.main.temp + " degrees");   //add degress symbol
+                            $(".wind").text("Wind Speed: " + response.wind.speed + " mph");
+                            $(".humidity").text("Humidity: " + response.main.humidity + "%");
+                        });
+                    if (dd < 10) {
+                        dd = '0' + dd;
+                    }
+                    if (mm < 10) {
+                        mm = '0' + mm;
+                    }
+                    var today = mm + '/' + dd + '/' + yyyy;
+                    $(".city").append("<span>" + today + "</span>");
+                };
+
+                // gets and displays the five-day forecast
+                function getForecast(subCity, APIKey, dd, mm, yyyy) {
+                    var forecastUrl = "https://api.openweathermap.org/data/2.5/forecast";
+
+                    $.ajax({
+                        url: forecastUrl, //API Call
+                        type: "GET",
+                        data: {
+                            q: subCity,
+                            appid: APIKey,
+                            units: "imperial",
+                            //cnt: "5"
+                        },
+                        success: function (response) {
+                            console.log('Received data:', response) // For testing
+                            console.log(response.city.name);
+                            for (var i = 0; i < 5; i++) {
+                                var placeHolder = response.list[i];
+                                console.log(placeHolder.main.temp_max, response.list[i].main.temp_min);
+                                console.log(dd); //get it!
+                                console.log(mm);
+                                dd = dd + 1;
+                                if (dd < 10) {
+                                    dd = '0' + dd;
+                                }
+                                var forecastDate = mm + '/' + dd + '/' + yyyy;
+                                var high = placeHolder.main.temp_max;
+                                var low = placeHolder.main.temp_min;
+                                var icon = "<img src='https://openweathermap.org/img/w/" + placeHolder.weather[0].icon + ".png'>"
+                                $(".forecast").append(forecastDate);
+                                $(".forecast").append(high);
+                                $(".forecast").append(low);
+                                $(".forecast").append(icon);
+                            }
+                        }
+                    })
+                }
             });
-
-            function getWeather(subCity) {
-                // OpenWeather API key
-                var APIKey = "166a433c57516f51dfab1f7edaed8413";
-
-                // The URL for the OpenWeather API using the user input city and APIKey 
-                var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + subCity + "&units=imperial&appid=" + APIKey;
-
-
-                // AJAX call to the OpenWeatherMap API for current weather
-                $.ajax({
-                    url: queryURL,
-                    method: "GET"
-                })
-                    // We store all of the retrieved data inside of an object called "response"
-                    .then(function (response) {
-
-                        // Log the resulting object for reference
-                        console.log(response);
-
-                        //Retrieve the weather icon
-                        var icon = ("<img src='http://openweathermap.org/img/w/" + response.weather[0].icon + ".png'>");
-
-                        // Get the date in mm/dd/yyyy format
-                        var today = new Date();
-                        //el_up.innerHTML = today;
-                        var dd = today.getDate();
-                        var mm = today.getMonth() + 1;
-                        var yyyy = today.getFullYear();
-                        if (dd < 10) {
-                            dd = '0' + dd;
-                        }
-                        if (mm < 10) {
-                            mm = '0' + mm;
-                        }
-                        var today = mm + '/' + dd + '/' + yyyy;
-
-                        //Render City, Date, and Weather Icon
-                        $(".city").append("<span>" + response.name + "</span>");
-                        $(".city").append("<span>" + today + "</span>");
-                        $(".city").append("<span>" + icon + "</span>");
-
-                        // Transfer content to HTML
-                        $(".temp").text("Temperature: " + response.main.temp + " degrees");   //add degress symbol
-                        $(".wind").text("Wind Speed: " + response.wind.speed + " mph");
-                        $(".humidity").text("Humidity: " + response.main.humidity + "%");
-                    });
-            }
         </script>
         <!-- Thanks to GeeksforGeeks for guidance on the date format- https://www.geeksforgeeks.org/how-to-get-current-formatted-date-dd-mm-yyyy-in-javascript/ -->
         <!-- Code to local JavaScript File -->
