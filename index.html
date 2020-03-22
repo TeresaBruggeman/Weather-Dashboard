@@ -56,7 +56,7 @@
                     var subCity = $("#city-input").val().trim();
 
                     // OpenWeather API key
-                    var APIKey = "166a433c57516f51dfab1f7edaed8413";
+                    var APIKey = "7321de3bce923134cdfb94c3f0188e62";
 
                     // OpenWeather query for current weather with user imput and api key
                     var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + subCity + "&units=imperial&appid=" + APIKey
@@ -86,19 +86,22 @@
 
                             // Log the resulting object for reference
                             console.log(response);
+                            var lat = response.coord.lat;
+                            var lon = response.coord.lon;
+                            console.log(lat, lon);
 
                             //Retrieve the weather icon
                             var icon = ("<img src='http://openweathermap.org/img/w/" + response.weather[0].icon + ".png'>");
 
-                            //Render City, Date, and Weather Icon
+                            //Render City and Weather Icon
                             $(".city").append("<span>" + response.name + "</span>");
-                            //$(".city").append("<span>" + today + "</span>");
                             $(".city").append("<span>" + icon + "</span>");
 
-                            // Transfer content to HTML
+                            // Render Temp, Wind Speed, Humidity and UV content to HTML
                             $(".temp").text("Temperature: " + response.main.temp + " degrees");   //add degress symbol
                             $(".wind").text("Wind Speed: " + response.wind.speed + " mph");
                             $(".humidity").text("Humidity: " + response.main.humidity + "%");
+                            getCurrentUV(lat, lon);
                         });
                     if (dd < 10) {
                         dd = '0' + dd;
@@ -108,6 +111,24 @@
                     }
                     var today = mm + '/' + dd + '/' + yyyy;
                     $(".city").append("<span>" + today + "</span>");
+                };
+
+                function getCurrentUV(lat, lon) {
+                    console.log(lat, lon);
+                    // Call to OpenWeather server for current weather data, render city, today's date, weather icon
+                    $.ajax({
+                        url: "http://api.openweathermap.org/data/2.5/uvi?appid=7321de3bce923134cdfb94c3f0188e62&lat=" + lat + "&lon=" + lon,
+                        method: "GET"
+                    })
+                        // We store all of the retrieved data inside of an object called "response"
+                        .then(function (response) {
+
+                            // Log the resulting object for reference
+                            console.log(response);
+
+                            // Transfer content to HTML
+                            $(".uvindex").text("UV Index:  " + response.value);
+                        });
                 };
 
                 // gets and displays the five-day forecast
@@ -121,28 +142,24 @@
                             q: subCity,
                             appid: APIKey,
                             units: "imperial",
-                            //cnt: "5"
                         },
                         success: function (response) {
                             console.log('Received data:', response) // For testing
                             console.log(response.city.name);
                             for (var i = 0; i < 5; i++) {
-                                var placeHolder = response.list[i];
-                                console.log(placeHolder.main.temp_max, response.list[i].main.temp_min);
-                                console.log(dd); //get it!
-                                console.log(mm);
+                                var placeHolder = response.list[i].main;
                                 dd = dd + 1;
                                 if (dd < 10) {
                                     dd = '0' + dd;
                                 }
                                 var forecastDate = mm + '/' + dd + '/' + yyyy;
-                                var high = placeHolder.main.temp_max;
-                                var low = placeHolder.main.temp_min;
-                                var icon = "<img src='https://openweathermap.org/img/w/" + placeHolder.weather[0].icon + ".png'>"
+                                var high = placeHolder.temp_max;
+                                var humidity = placeHolder.humidity;
+                                var icon = "<img src='https://openweathermap.org/img/w/" + response.list[i].weather[0].icon + ".png'>"
                                 $(".forecast").append(forecastDate);
-                                $(".forecast").append(high);
-                                $(".forecast").append(low);
-                                $(".forecast").append(icon);
+                                $(".forecast").append("<p>" + icon + "</p>");
+                                $(".forecast").append("<p>" + "Temperature: " + high + "</p>");   //add degress symbol
+                                $(".forecast").append("<p>" + "Humidity: " + humidity + "%" + "</p>");
                             }
                         }
                     })
