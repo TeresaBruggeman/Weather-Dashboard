@@ -1,15 +1,9 @@
-.city-list{
-    color: red;
 
-}
-.city-button{
-    color: red;
-}
-.city-name {
-
+#city-input {
+    overflow: hidden;
 }
 
-.forecast {
-    clear: both;
-    overflow: auto;
-}
+#eachForecast {
+    background-color: royalblue;
+    margin: 10px 20px;
+    }
