@@ -4,48 +4,65 @@
 <head>
     <meta charset="UTF-8">
     <title>Weather Dashboard</title>
-    <!-- Bootstrap CSS CDN  -->
+    <!-- set up responsive design -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap call  -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css" />
+    <!-- <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css" /> -->
     <!-- local style sheet -->
-    <link rel="stylesheet" href="./style.css/>">
+    <link rel="stylesheet" href="style.css">
     <!-- jQuery & AJAX -->
     <script src="https://code.jquery.com/jquery.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
+    <!-- BootStrap's jQuery calls -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
 </head>
 
 <body class="container container-md">
     <header class="row">
-        <h1 class="well well-lg col">Weather Dashboard</h1>
+        <h1 class="col well well-lg">Weather Dashboard</h1>
     </header>
 
     <body>
-        <!-- Display search box, submit icon, for user input form to get city -->
-        <form id="city-form">
-            <!-- Label for Text Box -->
-            <label for="city-input">Search for a City</label>
+        <!-- create aside -->
+        <div class="row">
+            <div class="sidebar pull-left col-3">
+                <!-- Display search box, submit icon, for user input form to get city -->
+                <form id="city-form">
+                    <!-- Label for Text Box -->
+                    <label for="city-input">Search for a City</label>
 
-            <!-- Text Input Box -->
-            <input type="text" id="city-input"><br>
+                    <!-- Text Input Box -->
+                    <input type="text" id="city-input"><br>
 
-            <!-- Submit Button -->
-            <input id="submitted-city" type="submit" value="Submit">
-            <!--this should be a search icon -->
-        </form>
+                    <!-- Submit Button -->
+                    <input id="submitted-city" type="submit" value="Submit">
+                    <!--this should be a search icon -->
+                </form>
+            </div>
 
-        <!-- HtmL framework for data from APIs -->
-        <div class="city"></div>
-        <div class="temp"></div>
-        <div class="humidity"></div>
-        <div class="wind"></div>
-        <div class="uvindex"></div>
-        <div class="forecast"></div>
 
+            <!-- HtmL framework for data from APIs -->
+            <div class="pull-right col-9">
+                <div class="city"></div>
+                <div class="temp"></div>
+                <div class="humidity"></div>
+                <div class="wind"></div>
+                <div class="uvindex"></div>
+                <div id="forecast" class="row"></div>
+            </div>
+        </div>
         <script type="text/javascript">
 
             $(document).ready(function () {
+
 
                 // event listener on the Submti button
                 $("#submitted-city").on("click", function (event) {
@@ -70,6 +87,8 @@
                     console.log(mm, dd, yyyy);
 
                     //call functions for current weather and the five-day forecast
+                    console.log(subCity);
+                    displaySidebar(subCity);
                     getCurrentWeather(queryURL, dd, mm, yyyy);
                     getForecast(subCity, APIKey, dd, mm, yyyy);
                 });
@@ -101,6 +120,13 @@
                             $(".temp").text("Temperature: " + response.main.temp + " degrees");   //add degress symbol
                             $(".wind").text("Wind Speed: " + response.wind.speed + " mph");
                             $(".humidity").text("Humidity: " + response.main.humidity + "%");
+
+                            //Add horizontal line
+                            $(".city").append('<br />');
+                            $(".city").append('<hr />');
+                            $(".city").append('<br />');
+
+                            //call the UV index function
                             getCurrentUV(lat, lon);
                         });
                     if (dd < 10) {
@@ -156,19 +182,44 @@
                                 var high = placeHolder.temp_max;
                                 var humidity = placeHolder.humidity;
                                 var icon = "<img src='https://openweathermap.org/img/w/" + response.list[i].weather[0].icon + ".png'>"
-                                $(".forecast").append(forecastDate);
-                                $(".forecast").append("<p>" + icon + "</p>");
-                                $(".forecast").append("<p>" + "Temperature: " + high + "</p>");   //add degress symbol
-                                $(".forecast").append("<p>" + "Humidity: " + humidity + "%" + "</p>");
+                                $("#forecast").append(
+                                    $('<div/>')
+                                        .attr("id", "eachForecast")
+                                        .addClass("forecastBox")
+                                        .append("<h5>" + forecastDate + "</h5>")
+                                        .append("<p>" + icon + "</p>")
+                                        .append("<p>" + "Temperature: " + high + "</p>")   //add degress symbol
+                                        .append("<p>" + "Humidity: " + humidity + "%" + "</p>")
+                                );
+
                             }
                         }
                     })
                 }
+                function displaySidebar(subCity) {
+                    console.log(subCity);
+                    var cities = [];
+
+                    cities.push(subCity);
+                    console.log(cities.length);
+                    localStorage.setItem("citiesArray", JSON.stringify(cities));
+                    for (var i = 0; i < cities.length; i++) {
+                        console.log(cities);
+                        var cityList = $("<div>").addClass("city-list");
+                        var cityButton = $("<button>").addClass("city-button");
+                        var cityName = $("<p>").addClass("city-name");
+                        // timeSlot.addClass("time-slot");
+                        // timeSlot.attr("data-name", timeBlocks[i]);
+                        cityButton.text(cities[i]);
+                        cityList.append(cityButton);
+                        cityName.text(cities[i]);
+                        $(".sidebar").append(cityList);
+                        localStorage.setItem("citiesArray", JSON.stringify(cities[i]));
+                    }
+                };
             });
         </script>
         <!-- Thanks to GeeksforGeeks for guidance on the date format- https://www.geeksforgeeks.org/how-to-get-current-formatted-date-dd-mm-yyyy-in-javascript/ -->
-        <!-- Code to local JavaScript File -->
-        <!-- <script src="./script.js"></script> -->
     </body>
 
 </html>
