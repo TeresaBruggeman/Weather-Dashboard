@@ -50,13 +50,14 @@ i {
     clear: left;
 }
 
-.city-current {
+.current-box {
     border-style: solid;
     border-color: lightgrey;
     border-width: thin;
     border-radius: 5px;
     padding: 10px 20px;
     margin-bottom: 20px;
+    margin-top: 10px;
 }
 
 #uvVal {

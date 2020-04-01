@@ -38,12 +38,13 @@ $(document).ready(function () {
                 var lon = response.coord.lon;
 
                 //Retrieve the weather icon
-                var icon = ("<img src='http://openweathermap.org/img/w/" + response.weather[0].icon + ".png'>");
+                var icon = ("<img src='https://openweathermap.org/img/w/" + response.weather[0].icon + ".png'>");
 
                 //create elements and render current weather
                 $(".city-current").append(
                     $('<div/>')
                         .attr("id", "current")
+                        .addClass("current-box")
                         .append("<h2>" + response.name + " (" + today + ") " + icon + "</h2>")
                         .append("<p>" + "Temperature: " + response.main.temp + " " + deg + "F" + "</p>")
                         .append("<p>" + "Humidity: " + response.main.humidity + "%" + "</p>")
@@ -60,7 +61,7 @@ $(document).ready(function () {
 
         // Call to OpenWeather server for current weather data, render city, today's date, weather icon
         $.ajax({
-            url: "http://api.openweathermap.org/data/2.5/uvi?appid=7321de3bce923134cdfb94c3f0188e62&lat=" + lat + "&lon=" + lon,
+            url: "https://api.openweathermap.org/data/2.5/uvi?appid=7321de3bce923134cdfb94c3f0188e62&lat=" + lat + "&lon=" + lon,
             method: "GET"
         })
             // We store all of the retrieved data inside of an object called "response"
@@ -112,6 +113,10 @@ $(document).ready(function () {
                 units: "imperial",
             },
             success: function (response) {
+                $("#forecast").append (
+                    $('<h4/>').text("5-Day Forecast:")
+                        .attr("id", "foreTitle")
+                );
                 for (var i = 0; i < 5; i++) {
                     var placeHolder = response.list[i].main;
 
