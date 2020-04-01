@@ -1,9 +1,96 @@
+form {
+    margin-bottom: 10px;
+}
+
+.sidebar {
+    width: 100%;
+    overflow: auto;
+    padding-right: 5px;
+    padding-left: 5px;
+}
 
 #city-input {
     overflow: hidden;
+    border-style: solid;
+    border-color: lightgrey;
+    border-width: thin;
+    max-width: 70%;
+    padding: 0px;
+}
+
+#search-box {
+    padding: inherit;
+    margin: 0px;
+}
+
+#submitted-city {
+    border-style: solid;
+    border-color: lightgrey;
+    border-width: thin;
+    background-color: royalblue;
+
+}
+
+i {
+    color: white;
+}
+
+.city-button {
+    width: 100%;
+    overflow: hidden;
+    border-style: solid;
+    border-color: lightgrey;
+    border-width: thin;
+    background-color: whitesmoke;
+    padding: 10px 20px;
+    text-align: left;
+}
+
+#weather {
+    clear: left;
+}
+
+.city-current {
+    border-style: solid;
+    border-color: lightgrey;
+    border-width: thin;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+}
+
+#uvVal {
+    padding: 8px;
+    border-radius: 5px;
+}
+
+.low {
+    background-color: greenyellow;
+}
+
+.mod {
+    background-color: yellow;
+}
+
+.high {
+    background-color: orangered;
 }
 
 #eachForecast {
     background-color: royalblue;
     margin: 10px 20px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    min-width: 150px;
+    max-width: 20%;
+    color:white;
+    font-size: 1rem;
+}
+
+@media only screen and (max-width: 767px) {
+    #eachForecast {
+      max-width: 100%;
     }
+  }
+
+
