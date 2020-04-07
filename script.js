@@ -103,6 +103,7 @@ $(document).ready(function () {
     // gets and displays the five-day forecast
     function getForecast(subCity) {
         var forecastUrl = "https://api.openweathermap.org/data/2.5/forecast";
+        $("#forecastTitle").empty();
 
         $.ajax({
             url: forecastUrl, //API Call
@@ -113,7 +114,7 @@ $(document).ready(function () {
                 units: "imperial",
             },
             success: function (response) {
-                $("#forecastTitle").append (
+                $("#forecastTitle").append(
                     $('<h4/>').text("5-Day Forecast:")
                         .attr("id", "foreTitle")
                 );
@@ -123,7 +124,7 @@ $(document).ready(function () {
                     //declare and define date variables
                     const today = new Date();
                     const nextDay = new Date(today);
-                    nextDay.setDate(nextDay.getDate() + (i + 1));           
+                    nextDay.setDate(nextDay.getDate() + (i + 1));
                     var dd = nextDay.getDate();
                     var mm = nextDay.getMonth() + 1;
                     var yyyy = nextDay.getFullYear();
@@ -169,10 +170,10 @@ $(document).ready(function () {
     //Event listeners- one on the Submit Button and one on the City Button
     // event listener on the Search icon
     $("#submitted-city").on("click", function (event) {
-        
+
         // Preventing the button from trying to submit the form
         event.preventDefault();
-        
+
         //initialize the page
         $(".city-current").empty();
         $("#forecast").empty();

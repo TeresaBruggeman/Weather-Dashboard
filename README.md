@@ -1,3 +1,7 @@
+Deployed app- https://teresabruggeman.github.io/Weather-Dashboard/
+
+Responsive weather application that renders the current weather conditions as well as a five-day forecast based on user-input city. Cities searched for are stored and if clicked again, weather conditions are shown again for that city.
+
 ## User Story
 
 ```
