@@ -113,7 +113,7 @@ $(document).ready(function () {
                 units: "imperial",
             },
             success: function (response) {
-                $("#forecast").append (
+                $("#forecastTitle").append (
                     $('<h4/>').text("5-Day Forecast:")
                         .attr("id", "foreTitle")
                 );
