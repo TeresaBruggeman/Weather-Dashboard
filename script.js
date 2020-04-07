@@ -103,6 +103,7 @@ $(document).ready(function () {
     // gets and displays the five-day forecast
     function getForecast(subCity) {
         var forecastUrl = "https://api.openweathermap.org/data/2.5/forecast";
+        $("#forecastTitle").empty();
 
         $.ajax({
             url: forecastUrl, //API Call
