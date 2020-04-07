@@ -1,6 +1,15 @@
 body {
-    background-image: url(good-mornin.jpg);
+    background-image: url(./Assets/good-mornin.jpg);
 }
+
+.title {
+    background-color: #4B3621;
+    width: 100%;
+    color: #fffafa;
+    text-align: center;
+    padding: 10px 0px;
+}
+
 form {
     margin-bottom: 10px;
 }
@@ -31,11 +40,10 @@ form {
     border-color: lightgrey;
     border-width: thin;
     background-color: royalblue;
-
 }
 
 i {
-    color: white;
+    color: #fffafa;
 }
 
 .city-button {
@@ -87,14 +95,12 @@ i {
     border-radius: 5px;
     min-width: 150px;
     max-width: 20%;
-    color:white;
+    color: #fffafa;
     font-size: 1rem;
 }
 
 @media only screen and (max-width: 767px) {
     #eachForecast {
-      max-width: 100%;
+        max-width: 100%;
     }
-  }
-
-
+}
